@@ -1,6 +1,6 @@
 # Pokémon Yellow [![Build Status][ci-badge]][ci]
 
-This is a disassembly of Pokémon Yellow.
+This is a disassembly of Pokémon Yellow. This particular version adds the crossgen evolutions, plus updating the Pokemon sprites to Gen 2, and some QOL. This is still a WIP and there are gonna be some changes later.
 
 It builds the following ROMs:
 
