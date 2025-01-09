@@ -231,7 +231,7 @@ FightingDojoHitmonleePokeBallText:
 	call PrintText
 	jr .done
 .GetMon
-	ld a, HITMONLEE
+	ld a, TYROGUE
 	call DisplayPokedex
 	ld hl, .Text
 	call PrintText
@@ -265,7 +265,7 @@ FightingDojoHitmonchanPokeBallText:
 	call PrintText
 	jr .done
 .GetMon
-	ld a, HITMONCHAN
+	ld a, TYROGUE
 	call DisplayPokedex
 	ld hl, .Text
 	call PrintText
