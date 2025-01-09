@@ -75,8 +75,6 @@ wTempoModifier:: db
 
 wc0f3:: dw
 
-	ds 11
-
 
 SECTION "Sprite State Data", WRAM0
 
@@ -186,7 +184,6 @@ ENDR
 
 wNumLoadedAnimatedObjects:: db
 wCurrentAnimatedObjectOAMBufferOffset::
-	ds 3
 wAnimatedObjectSpawnStateDataPointer:: dw
 wAnimatedObjectFramesDataPointer:: dw
 wAnimatedObjectJumptablePointer:: dw
@@ -229,7 +226,6 @@ wc5ec:: db
 wc5ed:: db
 wc5ee:: db
 wSurfingMinigameBGMapReadBuffer:: ds 1 tiles
-	ds 24
 wSurfingMinigameSCX:: db
 wSurfingMinigameSCX2:: db
 wSurfingMinigameSCXHi:: db
@@ -2255,13 +2251,11 @@ wBillsHouseCurScript:: db
 wRoute5GateCurScript:: db
 wPowerPlantCurScript:: ; overload
 wRoute7GateCurScript:: db
-	ds 1
 wSSAnne2FCurScript:: db
 wSeafoamIslandsB3FCurScript:: db
 wRoute23CurScript:: db
 wSeafoamIslandsB4FCurScript:: db
 wRoute18Gate1FCurScript:: db
-	ds 78
 wGameProgressFlagsEnd::
 
 	ds 56

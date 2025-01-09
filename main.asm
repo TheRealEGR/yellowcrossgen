@@ -334,7 +334,9 @@ INCLUDE "data/moves/animations.asm"
 INCLUDE "data/battle_anims/subanimations.asm"
 INCLUDE "data/battle_anims/frame_blocks.asm"
 
+SECTION "Engine Spillover", ROMX
 
+INCLUDE "engine/menus/item_descriptions.asm"
 SECTION "BG Map Attributes (Debug)", ROMX
 
 IF DEF(_DEBUG)
@@ -431,6 +433,7 @@ INCLUDE "engine/events/give_pokemon.asm"
 INCLUDE "engine/battle/get_trainer_name.asm"
 INCLUDE "engine/math/random.asm"
 INCLUDE "engine/predefs.asm"
+INCLUDE "engine/overworld/field_moves.asm"
 
 
 SECTION "Surfing Minigame", ROMX
