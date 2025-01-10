@@ -1,7 +1,7 @@
 # Pokémon Yellow [![Build Status][ci-badge]][ci]
 
 This is a disassembly of Pokémon Yellow. This particular version adds the crossgen evolutions, plus updating the Pokemon sprites to Gen 2, and some QOL. This is still a WIP and there are gonna be some changes later.
-
+Note: I have´t passed this to rgbds 0.8.0, so you would need rgbds 0.7.0 or 0.6.1 to build this.
 It builds the following ROMs:
 
 - Pokemon Yellow (UE) [C][!].gbc  `sha1: cc7d03262ebfaf2f06772c1a480c7d9d5f4a38e1`
