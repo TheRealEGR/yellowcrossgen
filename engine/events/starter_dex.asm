@@ -3,6 +3,7 @@
 StarterDex:
 	ld a, 1 << (DEX_BULBASAUR - 1) | 1 << (DEX_IVYSAUR - 1) | 1 << (DEX_CHARMANDER - 1) | 1 << (DEX_SQUIRTLE - 1)
 	ld [wPokedexOwned], a
+	ld [wPokedexModeSelect], a
 	predef ShowPokedexData
 	xor a
 	ld [wPokedexOwned], a
