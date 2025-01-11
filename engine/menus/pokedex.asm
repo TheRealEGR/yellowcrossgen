@@ -111,13 +111,7 @@ HandlePokedexSideMenu:
 	dec a
 	jr z, .choseArea
 	dec a
-	vc_patch Forbid_printing_Pokedex
-IF DEF (_YELLOW_VC)
-	jr z, .handleMenuInput
-ELSE
-	jr z, .chosePrint
-ENDC
-	vc_patch_end
+	jr z, .choseMove
 .choseQuit
 	ld b, 1
 .exitSideMenu
@@ -151,6 +145,8 @@ ENDC
 	jr .exitSideMenu
 
 .choseData
+	xor 0
+	ld [wMoveListCounter], a
 	call ShowPokedexDataInternal
 	ld b, 0
 	jr .exitSideMenu
@@ -167,20 +163,11 @@ ENDC
 	ld b, 0
 	jr .exitSideMenu
 
-.chosePrint
-	ldh a, [hTileAnimations]
-	push af
-	xor a
-	ldh [hTileAnimations], a
-	ld a, [wd11e]
-	ld [wcf91], a
-	callfar PrintPokedexEntry
-	xor a
-	ldh [hAutoBGTransferEnabled], a
-	call ClearScreen
-	pop af
-	ldh [hTileAnimations], a
-	ld b, $3
+.choseMove
+	ld a, 1
+	ld [wMoveListCounter], a
+	call ShowPokedexDataInternal
+	ld b, 0
 	jr .exitSideMenu
 
 ; handles the list of pokemon on the left of the pokedex screen
@@ -348,7 +335,7 @@ PokedexMenuItemsText:
 	db   "DATA"
 	next "CRY"
 	next "AREA"
-	next "PRNT"
+	next "MOVE"
 	next "QUIT@"
 
 Pokedex_PlacePokemonList:
@@ -458,10 +445,20 @@ ShowPokedexDataInternal:
 	push af
 	ld b, SET_PAL_POKEDEX
 	call RunPaletteCommand
+	ld a, [wMoveListCounter] ; using this as a temp variable
+	cp 0
+	jr nz, .PrintMoves
 	pop af
 	ld [wd11e], a
 	call DrawDexEntryOnScreen
+	jp z, .displaySeenBottomInfo
 	call c, Pokedex_PrintFlavorTextAtRow11
+	jr .waitForButtonPress
+.PrintMoves
+	pop af
+	ld [wd11e], a
+	call DrawDexEntryOnScreen
+	call c, Pokedex_PrintMovesText
 .waitForButtonPress
 	call JoypadLowSensitivity
 	ldh a, [hJoy5]
@@ -479,6 +476,9 @@ ShowPokedexDataInternal:
 	ld a, $77 ; max volume
 	ldh [rNR50], a
 	ret
+.displaySeenBottomInfo
+	call PrintMonTypes ; PureRGBnote: ADDED: for pokemon you have seen but not caught it displays just their types on the bottom
+	jr .waitForButtonPress
 
 HeightWeightText:
 	db   "HT  ?′??″"
@@ -571,7 +571,7 @@ DrawDexEntryOnScreen:
 	pop af
 	ld [wd11e], a
 	ld a, [wcf91]
-	ld [wd0b5], a
+	ld [wCurSpecies], a
 	pop de
 
 	push af
@@ -594,6 +594,7 @@ DrawDexEntryOnScreen:
 
 	ld a, c
 	and a
+
 	ret z ; if the pokemon has not been owned, don't print the height, weight, or description
 
 	inc de ; de = address of feet (height)
@@ -654,42 +655,460 @@ DrawDexEntryOnScreen:
 Pokedex_PrintFlavorTextAtRow11:
 	bccoord 1, 11
 Pokedex_PrintFlavorTextAtBC:
-	ld a, %11
+	ld a, %10
 	ldh [hClearLetterPrintingDelayFlags], a
 	call TextCommandProcessor ; print pokedex description text
+;;;;;;;;;; PureRGBnote: ADDED: pokedex will display the pokemon's types and their base stats on a new third page.
+	CheckEvent EVENT_GOT_POKEDEX
+	jp z, .clearLetterPrintingFlags ; don't display this new third page if we're showing the starters before getting the pokedex.
+	ld hl, DexPromptText
+	call TextCommandProcessor
+	hlcoord 1, 10
+	lb bc, 7, 18
+	call ClearScreenArea
+	call PrintMonTypes
+	; print mon base stats
+	hlcoord 9, 10
+	ld de, BaseStatsText
+	call PlaceString
+	hlcoord 12, 11
+	ld de, HPText
+	call PlaceString
+	ld de, wMonHBaseHP
+	hlcoord 15, 11
+	lb bc, 1, 3
+	call PrintNumber 
+	hlcoord 11, 12
+	ld de, AtkText
+	call PlaceString
+	ld de, wMonHBaseAttack
+	hlcoord 15, 12
+	lb bc, 1, 3
+	call PrintNumber 
+	hlcoord 11, 13
+	ld de, DefText
+	call PlaceString
+	ld de, wMonHBaseDefense
+	hlcoord 15, 13
+	lb bc, 1, 3
+	call PrintNumber
+	hlcoord 11, 14
+	ld de, SpdText
+	call PlaceString
+	ld de, wMonHBaseSpeed
+	hlcoord 15, 14
+	lb bc, 1, 3
+	call PrintNumber
+	hlcoord 11, 15
+	ld de, SpcText
+	call PlaceString
+	ld de, wMonHBaseSpecial
+	hlcoord 15, 15
+	lb bc, 1, 3
+	call PrintNumber 
+	hlcoord 9, 16
+	ld de, TotalText
+	call PlaceString
+	; calculate the base stat total to print it
+	ld b, 0
+	ld a, [wMonHBaseHP]
+	ld hl, 0
+	ld c, a
+	add hl, bc
+	ld a, [wMonHBaseAttack]
+	ld c, a
+	add hl, bc
+	ld a, [wMonHBaseDefense]
+	ld c, a
+	add hl, bc
+	ld a, [wMonHBaseSpeed]
+	ld c, a
+	add hl, bc
+	ld a, [wMonHBaseSpecial]
+	ld c, a
+	add hl, bc
+	ld a, h
+	ld [wSum], a
+	ld a, l
+	ld [wSum+1], a
+	ld de, wSum
+	hlcoord 15, 16
+	lb bc, 2, 3
+	call PrintNumber
+; print evolution data
+	ld hl, DexPromptText
+	call TextCommandProcessor
+	hlcoord 1, 10
+	lb bc, 7, 18
+	call ClearScreenArea
+	hlcoord 5, 10
+	ld de, EvolutionsText
+	call PlaceString
+; load pokemon data
+	ld a, [wd11e]
+	ld [wWhichPokemon], a
+	ld [wcf91], a
+	farcall PrepareEvolutionData
+	ld de, wPokedexDataBuffer
+	xor a
+	ldh [hEvoCounter], a
+.loopEvolutionData
+	ld a, [wMoveListCounter] 
+	ld c, a ; loop counter
+	cp 0
+	jp z, .clearLetterPrintingFlags
+	ld a, [de]
+	cp EVOLVE_LEVEL
+	jr z, .printLevelText
+	cp EVOLVE_TRADE
+	jr z, .printTradeText
+	cp EVOLVE_ITEM
+	jr z, .itemIdByte
+.printLevelText
+	push de
+	push bc
+	ld de, EvolveLevelText
+	hlcoord 1, 11
+	ldh a, [hEvoCounter]
+	ld bc, SCREEN_WIDTH ; * 3
+	call AddNTimes
+	call PlaceString
+	pop bc
+	pop de
+	jr .itemIdByte
+.printTradeText
+	push de
+	push bc
+	ld de, EvolveTradeText
+	hlcoord 1, 11
+	ldh a, [hEvoCounter]
+	ld bc, SCREEN_WIDTH ; * 3
+	call AddNTimes
+	call PlaceString
+	pop bc
+	pop de
+	jr .itemIdByte
+.itemIdByte
+	inc de
+	ld a, [de]
+	cp $FF
+	jr z, .levelByte
+	push de
+	push bc
+	ld [wd11e], a 
+	call GetItemName
+	hlcoord 1, 11	
+	ldh a, [hEvoCounter]
+	ld bc, SCREEN_WIDTH ; * 3
+	call AddNTimes
+	call PlaceString
+	pop bc
+	pop de
+	ld a, [wWhichPokemon]
+	ld [wd11e], a
+.levelByte
+	inc de
+	ld a, [de]
+	cp 1
+	jr z, .targetByte
+	push de
+	push bc
+	hlcoord 16, 11
+	ldh a, [hEvoCounter]
+	ld bc, SCREEN_WIDTH ; * 3
+	call AddNTimes
+	lb bc, 1, 3
+	call PrintNumber
+	pop bc
+	pop de
+	jr .targetByte
+.targetByte
+	inc de
+	dec c
+	ld a, c
+	ld [wMoveListCounter], a
+	ld hl, hEvoCounter
+	inc [hl]
+	inc de
+	jp .loopEvolutionData
+.clearLetterPrintingFlags
+;;;;;;;;;;
 	xor a
 	ldh [hClearLetterPrintingDelayFlags], a
 	ret
 
-Pokedex_PrepareDexEntryForPrinting:
-	hlcoord 0, 0
-	ld de, SCREEN_WIDTH
-	lb bc, $66, $d
-	call DrawTileLine
-	hlcoord 19, 0
-	ld b, $67
-	call DrawTileLine
-	hlcoord 0, 13
-	ld de, $1
-	lb bc, $6f, SCREEN_WIDTH
-	call DrawTileLine
-	ld a, $6c
-	ldcoord_a 0, 13
-	ld a, $6e
-	ldcoord_a 19, 13
-	ld a, [wPrinterPokedexEntryTextPointer]
-	ld l, a
-	ld a, [wPrinterPokedexEntryTextPointer + 1]
-	ld h, a
-	bccoord 1, 1
-	ldh a, [hUILayoutFlags]
-	set 3, a
-	ldh [hUILayoutFlags], a
-	call Pokedex_PrintFlavorTextAtBC
-	ldh a, [hUILayoutFlags]
-	res 3, a
-	ldh [hUILayoutFlags], a
+
+EvolveLevelText:
+	db "LEVEL-UP@"
+EvolveTradeText:
+	db "TRADE@"
+
+PrintMonTypes:
+	hlcoord 1, 11
+	ld de, DexType1Text
+	call PlaceString
+	hlcoord 2, 12
+	predef PrintMonType
+	ld a, [wMonHType1]
+	ld b, a
+	ld a, [wMonHType2]
+	cp b
+	jr z, .done ; don't print TYPE2/ if the pokemon has 1 type only.
+	hlcoord 1, 13
+	ld de, DexType2Text
+	call PlaceString
+.done
 	ret
+
+
+Pokedex_PrintMovesText:
+	ld a, [wd11e]
+	ld [wWhichPokemon], a
+	ld [wcf91], a
+	farcall PrepareLevelUpMoveList
+	ld de, wMoveBuffer
+	ld b, 0 ; counter
+	ld a, [wMoveListCounter]
+	cp 0
+	jp z, .done
+.PrintLevelUpMovesLoop
+	push de
+	push bc
+	ld de, LevelUpMovesText
+	hlcoord 1, 10
+	call PlaceString
+	pop bc
+	pop de
+	push bc
+	ld a, [de]
+	hlcoord 1, 12
+	lb bc, 1, 3
+	call PrintNumber ; print number of seen pokemon
+	inc de
+	inc de
+	ld a, [de]
+	push de
+	ld [wd11e], a
+	call GetMoveName
+	hlcoord 5, 12
+	call PlaceString
+	pop de
+	pop bc
+	inc b
+	ld a, [wMoveListCounter]
+	cp b
+	jp z, .done
+	push bc
+	inc de
+	ld a, [de]
+	hlcoord 1, 13
+	lb bc, 1, 3
+	call PrintNumber ; print number of seen pokemon
+	inc de
+	inc de
+	ld a, [de]
+	push de
+	ld [wd11e], a
+	call GetMoveName
+	hlcoord 5, 13
+	call PlaceString
+	pop de
+	pop bc
+	inc b
+	ld a, [wMoveListCounter]
+	cp b
+	jp z, .done
+	push bc
+	inc de
+	ld a, [de]
+	hlcoord 1, 14
+	lb bc, 1, 3
+	call PrintNumber ; print number of seen pokemon
+	inc de
+	inc de
+	ld a, [de]
+	push de
+	ld [wd11e], a
+	call GetMoveName
+	hlcoord 5, 14
+	call PlaceString
+	pop de
+	pop bc
+	inc b
+	ld a, [wMoveListCounter]
+	cp b
+	jr z, .done
+	push bc
+	inc de
+	ld a, [de]
+	hlcoord 1, 15
+	lb bc, 1, 3
+	call PrintNumber ; print number of seen pokemon
+	inc de
+	inc de
+	ld a, [de]
+	push de
+	ld [wd11e], a
+	call GetMoveName
+	hlcoord 5, 15
+	call PlaceString
+	pop de
+	pop bc
+	inc b
+	ld a, [wMoveListCounter]
+	cp b
+	jr z, .done
+	push bc
+	inc de
+	ld a, [de]
+	hlcoord 1, 16
+	lb bc, 1, 3
+	call PrintNumber ; print number of seen pokemon
+	inc de
+	inc de
+	ld a, [de]
+	push de
+	ld [wd11e], a
+	call GetMoveName
+	hlcoord 5, 16
+	call PlaceString
+	pop de
+	pop bc
+	inc b
+	ld a, [wMoveListCounter]
+	cp b
+	jr z, .done
+	inc de
+	push de
+	push bc
+	call NewPageButtonPressCheck
+	hlcoord 1, 10
+	lb bc, 7, 18
+	call ClearScreenArea
+	pop bc
+	pop de
+	jp .PrintLevelUpMovesLoop
+.done
+	call NewPageButtonPressCheck
+	hlcoord 1, 10
+	lb bc, 7, 18
+	call ClearScreenArea
+.tmMoveset
+	farcall GetTMMoves
+	ld de, wMoveBuffer
+	ld a, [de]
+.PrintTMMovesLoop
+	push de
+	ld de, TMHMMovesText
+	hlcoord 1, 10
+	call PlaceString
+	pop de
+	ld a, [de]
+.first
+	cp 0
+	jp z, .done2
+	push de
+	ld [wd11e], a
+	call GetMoveName
+	hlcoord 2, 12
+	call PlaceString
+	pop de
+	inc de
+	ld a, [de]
+.second
+	cp 0
+	jp z, .done2
+	push de
+	ld [wd11e], a
+	call GetMoveName
+	hlcoord 2, 13
+	call PlaceString
+	pop de
+	inc de
+	ld a, [de]
+.third
+	cp 0
+	jp z, .done2
+	push de
+	ld [wd11e], a
+	call GetMoveName
+	hlcoord 2, 14
+	call PlaceString
+	pop de
+.fourth
+	inc de
+	ld a, [de]
+	cp 0
+	jp z, .done2
+	push de
+	ld [wd11e], a
+	call GetMoveName
+	hlcoord 2, 15
+	call PlaceString
+	pop de
+	inc de
+	ld a, [de]
+	cp 0
+	jp z, .done2
+	push de
+	ld [wd11e], a
+	call GetMoveName
+	hlcoord 2, 16
+	call PlaceString
+	pop de
+	inc de
+	; wait for button press
+	push de
+	call NewPageButtonPressCheck
+	hlcoord 1, 10
+	lb bc, 7, 18
+	call ClearScreenArea
+	pop de
+	jp .PrintTMMovesLoop
+.done2
+	ret
+NewPageButtonPressCheck:
+.waitForButtonPressLetGo
+	call Joypad
+	ldh a, [hJoyHeld]
+	and A_BUTTON | B_BUTTON
+	jr nz, .waitForButtonPressLetGo
+.waitForButtonPress
+	call Joypad
+	ldh a, [hJoyHeld]
+	and A_BUTTON | B_BUTTON
+	jr z, .waitForButtonPress
+	ret
+
+LevelUpMovesText:
+	db   "LEVEL UP MOVES:@"
+
+TMHMMovesText:
+	db   "TM/HM MOVES:@"
+
+DexPromptText:
+	text_promptbutton
+	text_end
+DexType1Text:
+	db "TYPE1/@"
+DexType2Text:
+	db "TYPE2/@"
+BaseStatsText:
+	db "BASE STATS@"
+EvolutionsText:
+	db "EVOLUTIONS@"
+HPText:
+	db "HP@"
+AtkText:
+	db "ATK@"
+DefText:
+	db "DEF@"
+SpdText:
+	db "SPD@"
+SpcText:
+	db "SPC@"
+TotalText:
+	db "TOTAL@"
 
 ; draws a line of tiles
 ; INPUT:

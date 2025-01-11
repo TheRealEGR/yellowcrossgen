@@ -1,6 +1,6 @@
 	db DEX_KLEAVOR ; pokedex id
 
-	db  70, 135,  95,  85,  45
+	db  70, 135,  95,  85,  70
 	;   hp  atk  def  spd  spc
 
 	db BUG, ROCK ; type

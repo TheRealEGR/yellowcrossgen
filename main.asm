@@ -88,7 +88,10 @@ INCLUDE "engine/menus/pc.asm"
 
 SECTION "Battle Engine 2", ROMX
 
-
+INCLUDE "engine/battle/print_type.asm"
+INCLUDE "engine/battle/save_trainer_name.asm"
+INCLUDE "engine/gfx/screen_effects.asm"
+INCLUDE "engine/battle/move_effects/leech_seed.asm"
 
 SECTION "Doors and Ledges", ROMX
 
@@ -122,18 +125,6 @@ INCLUDE "engine/pokemon/bills_pc.asm"
 
 SECTION "Battle Engine 3", ROMX
 
-INCLUDE "engine/battle/print_type.asm"
-INCLUDE "engine/battle/save_trainer_name.asm"
-
-
-SECTION "Battle Engine 4", ROMX
-
-INCLUDE "engine/gfx/screen_effects.asm"
-INCLUDE "engine/battle/move_effects/leech_seed.asm"
-
-
-SECTION "Battle Engine 5", ROMX
-
 INCLUDE "engine/battle/display_effectiveness.asm"
 INCLUDE "engine/items/tmhm.asm"
 INCLUDE "engine/pikachu/respawn_overworld_pikachu.asm"
@@ -141,6 +132,12 @@ INCLUDE "engine/battle/scale_sprites.asm"
 INCLUDE "engine/slots/game_corner_slots2.asm"
 INCLUDE "data/moves/moves.asm"
 
+SECTION "Battle Engine 4", ROMX
+
+
+SECTION "Battle Engine 5", ROMX
+
+INCLUDE "data/pokemon/base_stats.asm"
 
 SECTION "Slot Machines", ROMX
 
@@ -151,7 +148,6 @@ INCLUDE "engine/slots/game_corner_slots.asm"
 
 SECTION "Battle Engine 6", ROMX
 
-INCLUDE "data/pokemon/base_stats.asm"
 INCLUDE "data/pokemon/cries.asm"
 INCLUDE "engine/battle/trainer_ai.asm"
 INCLUDE "engine/battle/draw_hud_pokeball_gfx.asm"

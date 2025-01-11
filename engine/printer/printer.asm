@@ -44,7 +44,6 @@ PrintPokedexEntry:
 	call SaveScreenTilesToBuffer1
 	xor a
 	ldh [hAutoBGTransferEnabled], a
-	call Printer_PrepareDexEntryForPrinting
 	ld a, $7
 	call Printer_StartTransmission
 	ld a, $3
@@ -108,11 +107,6 @@ Printer_GetDexEntryRegisters:
 .not_caught
 	ld a, $9
 .got_num_rows
-	ret
-
-Printer_PrepareDexEntryForPrinting:
-	call ClearScreen
-	callfar Pokedex_PrepareDexEntryForPrinting
 	ret
 
 PrintSurfingMinigameHighScore::
