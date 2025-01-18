@@ -1,6 +1,6 @@
 	db DEX_IGGLYBUFF ; pokedex id
 
-	db  90,  30,  15,  15,  20
+	db  90,  30,  15,  15,  40
 	;   hp  atk  def  spd  spc
 
 	db NORMAL, NORMAL ; type

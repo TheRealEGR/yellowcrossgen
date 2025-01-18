@@ -1,6 +1,6 @@
 	db DEX_MAGBY ; pokedex id
 
-	db  45,  75,  37,  83,  55
+	db  45,  75,  37,  83,  70
 	;   hp  atk  def  spd  spc
 
 	db FIRE, FIRE ; type
