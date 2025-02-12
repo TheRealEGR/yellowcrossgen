@@ -30,11 +30,11 @@ INCLUDE "text/SilphCo7F.asm"
 INCLUDE "text/SilphCo8F.asm"
 INCLUDE "text/SilphCo9F.asm"
 INCLUDE "text/SilphCo10F.asm"
+INCLUDE "text/SilphCo11F.asm"
 
 
 SECTION "Text 2", ROMX
 
-INCLUDE "text/SilphCo11F.asm"
 INCLUDE "text/PokemonMansion2F.asm"
 INCLUDE "text/PokemonMansion3F.asm"
 INCLUDE "text/PokemonMansionB1F.asm"

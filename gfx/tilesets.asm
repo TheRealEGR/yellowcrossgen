@@ -17,11 +17,10 @@ ShipPort_Block::    INCBIN "gfx/blocksets/ship_port.bst"
 Interior_GFX::      INCBIN "gfx/tilesets/interior.2bpp"
 Interior_Block::    INCBIN "gfx/blocksets/interior.bst"
 
-
-SECTION "Tilesets 2", ROMX
-
 Plateau_GFX::       INCBIN "gfx/tilesets/plateau.2bpp"
 Plateau_Block::     INCBIN "gfx/blocksets/plateau.bst"
+
+SECTION "Tilesets 2", ROMX
 
 Dojo_GFX::
 Gym_GFX::           INCBIN "gfx/tilesets/gym.2bpp"
@@ -43,11 +42,10 @@ Gate_Block::        INCBIN "gfx/blocksets/gate.bst"
 Forest_GFX::        INCBIN "gfx/tilesets/forest.2bpp"
 Forest_Block::      INCBIN "gfx/blocksets/forest.bst"
 
-
-SECTION "Tilesets 3", ROMX
-
 Facility_GFX::      INCBIN "gfx/tilesets/facility.2bpp"
 Facility_Block::    INCBIN "gfx/blocksets/facility.bst"
+
+SECTION "Tilesets 3", ROMX
 
 Cemetery_GFX::      INCBIN "gfx/tilesets/cemetery.2bpp"
 Cemetery_Block::    INCBIN "gfx/blocksets/cemetery.bst"
@@ -57,7 +55,6 @@ Lobby_GFX::         INCBIN "gfx/tilesets/lobby.2bpp"
 Lobby_Block::       INCBIN "gfx/blocksets/lobby.bst"
 Ship_GFX::          INCBIN "gfx/tilesets/ship.2bpp"
 Ship_Block::        INCBIN "gfx/blocksets/ship.bst"
-
 
 SECTION "Tilesets 4", ROMX
 

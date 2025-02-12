@@ -209,11 +209,11 @@ OmastarPicFront::     INCBIN "gfx/pokemon/front/omastar.pic"
 OmastarPicBack::      INCBIN "gfx/pokemon/back/omastarb.pic"
 JigglypuffPicFront::  INCBIN "gfx/pokemon/front/jigglypuff.pic"
 JigglypuffPicBack::   INCBIN "gfx/pokemon/back/jigglypuffb.pic"
+WigglytuffPicFront::  INCBIN "gfx/pokemon/front/wigglytuff.pic"
+WigglytuffPicBack::   INCBIN "gfx/pokemon/back/wigglytuffb.pic"
 
 SECTION "Pics 5", ROMX
 
-WigglytuffPicFront::  INCBIN "gfx/pokemon/front/wigglytuff.pic"
-WigglytuffPicBack::   INCBIN "gfx/pokemon/back/wigglytuffb.pic"
 EeveePicFront::       INCBIN "gfx/pokemon/front/eevee.pic"
 EeveePicBack::        INCBIN "gfx/pokemon/back/eeveeb.pic"
 FlareonPicFront::     INCBIN "gfx/pokemon/front/flareon.pic"
@@ -262,11 +262,11 @@ MetapodPicFront::     INCBIN "gfx/pokemon/front/metapod.pic"
 MetapodPicBack::      INCBIN "gfx/pokemon/back/metapodb.pic"
 ButterfreePicFront::  INCBIN "gfx/pokemon/front/butterfree.pic"
 ButterfreePicBack::   INCBIN "gfx/pokemon/back/butterfreeb.pic"
+MachampPicFront::      INCBIN "gfx/pokemon/front/machamp.pic"
+MachampPicBack::       INCBIN "gfx/pokemon/back/machampb.pic"
 
 SECTION "Pics 6", ROMX
 
-MachampPicFront::      INCBIN "gfx/pokemon/front/machamp.pic"
-MachampPicBack::       INCBIN "gfx/pokemon/back/machampb.pic"
 LickilickyPicFront::   INCBIN "gfx/pokemon/front/lickilicky.pic"
 LickilickyPicBack::    INCBIN "gfx/pokemon/back/lickilickyb.pic"
 GolduckPicFront::      INCBIN "gfx/pokemon/front/golduck.pic"
@@ -313,13 +313,13 @@ AbraPicFront::         INCBIN "gfx/pokemon/front/abra.pic"
 AbraPicBack::          INCBIN "gfx/pokemon/back/abrab.pic"
 AlakazamPicFront::     INCBIN "gfx/pokemon/front/alakazam.pic"
 AlakazamPicBack::      INCBIN "gfx/pokemon/back/alakazamb.pic"
-
-SECTION "Pics 7", ROMX
-
 PidgeottoPicFront::    INCBIN "gfx/pokemon/front/pidgeotto.pic"
 PidgeottoPicBack::     INCBIN "gfx/pokemon/back/pidgeottob.pic"
 PidgeotPicFront::      INCBIN "gfx/pokemon/front/pidgeot.pic"
 PidgeotPicBack::       INCBIN "gfx/pokemon/back/pidgeotb.pic"
+
+SECTION "Pics 7", ROMX
+
 StarmiePicFront::      INCBIN "gfx/pokemon/front/starmie.pic"
 StarmiePicBack::       INCBIN "gfx/pokemon/back/starmieb.pic"
 BulbasaurPicFront::    INCBIN "gfx/pokemon/front/bulbasaur.pic"
@@ -366,11 +366,15 @@ CharmanderPicFront::   INCBIN "gfx/pokemon/front/charmander.pic"
 CharmanderPicBack::    INCBIN "gfx/pokemon/back/charmanderb.pic"
 SquirtlePicFront::     INCBIN "gfx/pokemon/front/squirtle.pic"
 SquirtlePicBack::      INCBIN "gfx/pokemon/back/squirtleb.pic"
-
-SECTION "Pics 9", ROMX
-
 CharmeleonPicFront::   INCBIN "gfx/pokemon/front/charmeleon.pic"
 CharmeleonPicBack::    INCBIN "gfx/pokemon/back/charmeleonb.pic"
+
+FossilKabutopsPic::    INCBIN "gfx/pokemon/front/fossilkabutops.pic"
+FossilAerodactylPic::  INCBIN "gfx/pokemon/front/fossilaerodactyl.pic"
+GhostPic::             INCBIN "gfx/battle/ghost.pic"
+
+SECTION "Pics 8", ROMX
+
 WartortlePicFront::    INCBIN "gfx/pokemon/front/wartortle.pic"
 WartortlePicBack::     INCBIN "gfx/pokemon/back/wartortleb.pic"
 CharizardPicFront::    INCBIN "gfx/pokemon/front/charizard.pic"
@@ -388,15 +392,7 @@ WeepinbellPicBack::    INCBIN "gfx/pokemon/back/weepinbellb.pic"
 VictreebelPicFront::   INCBIN "gfx/pokemon/front/victreebel.pic"
 VictreebelPicBack::    INCBIN "gfx/pokemon/back/victreebelb.pic"
 
-RedPicBack::       INCBIN "gfx/player/redb.pic"
-OldManPicBack::    INCBIN "gfx/battle/oldmanb.pic"
-ProfOakPicBack::   INCBIN "gfx/battle/prof.oakb.pic"
-
-FossilKabutopsPic::    INCBIN "gfx/pokemon/front/fossilkabutops.pic"
-FossilAerodactylPic::  INCBIN "gfx/pokemon/front/fossilaerodactyl.pic"
-GhostPic::             INCBIN "gfx/battle/ghost.pic"
-
-SECTION "Pics 8", ROMX
+SECTION "Pics 9", ROMX
 
 YoungsterPic::     INCBIN "gfx/trainers/youngster.pic"
 BugCatcherPic::    INCBIN "gfx/trainers/bugcatcher.pic"
@@ -445,3 +441,7 @@ ChannelerPic::     INCBIN "gfx/trainers/channeler.pic"
 AgathaPic::        INCBIN "gfx/trainers/agatha.pic"
 LancePic::         INCBIN "gfx/trainers/lance.pic"
 JessieJamesPic::   INCBIN "gfx/trainers/jessiejames.pic"
+
+RedPicBack::       INCBIN "gfx/player/redb.pic"
+OldManPicBack::    INCBIN "gfx/battle/oldmanb.pic"
+ProfOakPicBack::   INCBIN "gfx/battle/prof.oakb.pic"
