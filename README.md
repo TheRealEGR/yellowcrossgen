@@ -8,6 +8,13 @@ It builds the following ROMs:
 - YELLMONS.GB (debug build) `sha1: d44e96eddfbdad633cbe4e6e64915e9e198974b0`
 - Dmgapse0.h08.patch `sha1: f3346a5559d52c296b8feab0cdbbfb0e250ac161`
 
+Some bugs:
+
+-The intro glitches out, reccomended to skip
+-Blue´s sprite glitches out
+-The surfing minigame also glitches
+-The NPC sprites also glitch
+
 To set up the repository, see [**INSTALL.md**](INSTALL.md).
 
 
