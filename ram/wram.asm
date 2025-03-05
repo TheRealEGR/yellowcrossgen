@@ -184,6 +184,7 @@ ENDR
 
 wNumLoadedAnimatedObjects:: db
 wCurrentAnimatedObjectOAMBufferOffset::
+	ds 3
 wAnimatedObjectSpawnStateDataPointer:: dw
 wAnimatedObjectFramesDataPointer:: dw
 wAnimatedObjectJumptablePointer:: dw
@@ -226,6 +227,7 @@ wc5ec:: db
 wc5ed:: db
 wc5ee:: db
 wSurfingMinigameBGMapReadBuffer:: ds 1 tiles
+	ds 24
 wSurfingMinigameSCX:: db
 wSurfingMinigameSCX2:: db
 wSurfingMinigameSCXHi:: db
