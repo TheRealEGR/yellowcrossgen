@@ -54,10 +54,6 @@ BikerSprite::            INCBIN "gfx/sprites/biker.2bpp"
 SailorSprite::           INCBIN "gfx/sprites/sailor.2bpp"
 CookSprite::             INCBIN "gfx/sprites/cook.2bpp"
 BikeShopClerkSprite::    INCBIN "gfx/sprites/bike_shop_clerk.2bpp"
-
-
-SECTION "NPC Sprites 3", ROMX
-
 MrFujiSprite::           INCBIN "gfx/sprites/mr_fuji.2bpp"
 GiovanniSprite::         INCBIN "gfx/sprites/giovanni.2bpp"
 RocketSprite::           INCBIN "gfx/sprites/rocket.2bpp"
@@ -77,7 +73,8 @@ BrunoSprite::            INCBIN "gfx/sprites/bruno.2bpp"
 LoreleiSprite::          INCBIN "gfx/sprites/lorelei.2bpp"
 SeelSprite::             INCBIN "gfx/sprites/seel.2bpp"
 
-SECTION "NPC Sprites 4", ROMX
+
+SECTION "NPC Sprites 3", ROMX
 
 OfficerJennySprite::     INCBIN "gfx/sprites/officer_jenny.2bpp"
 PikachuSprite::          INCBIN "gfx/sprites/pikachu.2bpp"

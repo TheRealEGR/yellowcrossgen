@@ -81,8 +81,9 @@ ROMX $C
 	"Pics 4"
 ROMX $D
 	"Pics 5"
-ROMX $E
 	"Slot Machines"
+ROMX $E
+	"Battle Engine 6"
 ROMX $F
 	"Battle Core"
 ROMX $10
@@ -114,7 +115,7 @@ ROMX $16
 	"Saffron Guards"
 ROMX $17
 	"Maps 15"
-	"Engine Spillover"
+	"Starter Dex"
 	"Maps 16"
 	"Hidden Objects 3"
 ROMX $18
@@ -179,14 +180,14 @@ ROMX $2C
 ROMX $2D
 	"Text 8"
 ROMX $2E
-	"Pokédex Text 1"
+	"Pokédex Text"
 ROMX $2f
 	"Move Names"
 	"BG Map Attributes (Debug)"
 	org $5000
 	"BG Map Attributes"
 ROMX $30
-	"Pokédex Text 2"
+	"bank30"
 ROMX $31
 	"Pikachu Cries 6"
 ROMX $32
@@ -207,8 +208,7 @@ ROMX $39
 	"Pikachu Graphics 1"
 ROMX $3A
 	"bank3A"
-ROMX $3B
-
+; bank $3B is empty
 ROMX $3C
 	"Pikachu PCM"
 	"Tilesets 4"
@@ -239,7 +239,7 @@ WRAM0
 	"Main Data"
 	"Current Box Data"
 	"GBC Palette Data"
-	org $df15
+	org $df1d
 	"Stack"
 VRAM $0
 	"VRAM"

@@ -76,6 +76,9 @@ INCLUDE "gfx/player.asm"
 INCLUDE "engine/menus/start_sub_menus.asm"
 INCLUDE "engine/items/tms.asm"
 
+EXPBarGraphics::  INCBIN "gfx/exp_bar.2bpp"
+EXPBarGraphicsEnd::
+
 
 SECTION "Battle Engine 1", ROMX
 
@@ -131,7 +134,7 @@ INCLUDE "engine/pokemon/bills_pc.asm"
 SECTION "Battle Engine 3", ROMX
 
 INCLUDE "engine/battle/print_type.asm"
-INCLUDE "engine/overworld/field_moves.asm"
+INCLUDE "engine/battle/save_trainer_name.asm"
 
 
 SECTION "Battle Engine 4", ROMX
@@ -147,8 +150,6 @@ INCLUDE "engine/items/tmhm.asm"
 INCLUDE "engine/pikachu/respawn_overworld_pikachu.asm"
 INCLUDE "engine/battle/scale_sprites.asm"
 INCLUDE "engine/slots/game_corner_slots2.asm"
-INCLUDE "data/moves/moves.asm"
-INCLUDE "data/pokemon/base_stats.asm"
 
 
 SECTION "Slot Machines", ROMX
@@ -160,6 +161,8 @@ INCLUDE "engine/slots/game_corner_slots.asm"
 
 SECTION "Battle Engine 6", ROMX
 
+INCLUDE "data/moves/moves.asm"
+INCLUDE "data/pokemon/base_stats.asm"
 INCLUDE "data/pokemon/cries.asm"
 INCLUDE "engine/battle/trainer_ai.asm"
 INCLUDE "engine/battle/draw_hud_pokeball_gfx.asm"
@@ -177,6 +180,161 @@ LoadBackSpriteUnzoomed:
 	ld de, vBackPic
 	push de
 	jp LoadUncompressedBackSprite
+
+PrintEXPBar:
+	call CalcEXPBarPixelLength
+	ldh a, [hQuotient + 3] ; pixel length
+	ld [wEXPBarPixelLength], a
+	ld b, a
+	ld c, $08
+	ld d, $08
+	hlcoord 17, 11
+.loop
+	ld a, b
+	sub c
+	jr nc, .skip
+	ld c, b
+	jr .loop
+.skip
+	ld b, a
+	ld a, $c0
+	add c
+.loop2
+	ld [hld], a
+	dec d
+	ret z
+	ld a, b
+	and a
+	jr nz, .loop
+	ld a, $c0
+	jr .loop2
+
+CalcEXPBarPixelLength:
+	ld hl, wEXPBarKeepFullFlag
+	bit 0, [hl]
+	jr z, .start
+	res 0, [hl]
+	ld a, $40
+	ldh [hQuotient + 3], a
+	ret
+
+.start
+	; get the base exp needed for the current level
+	ld a, [wPlayerBattleStatus3]
+	ld hl, wBattleMonSpecies
+	bit 3, a
+	jr z, .skip
+	ld hl, wPartyMon1
+	call BattleMonPartyAttr
+.skip
+	ld a, [hl]
+	ld [wCurSpecies], a
+	call GetMonHeader
+	ld a, [wBattleMonLevel]
+	ld d, a
+	ld hl, CalcExperience
+	ld b, BANK(CalcExperience)
+	call Bankswitch
+	ld hl, hMultiplicand
+	ld de, wEXPBarBaseEXP
+	ld a, [hli]
+	ld [de], a
+	inc de
+	ld a, [hli]
+	ld [de], a
+	inc de
+	ld a, [hl]
+	ld [de], a
+
+	; get the exp needed to gain a level
+	ld a, [wBattleMonLevel]
+	ld d, a
+	inc d
+	ld hl, CalcExperience
+	ld b, BANK(CalcExperience)
+	call Bankswitch
+
+	; get the address of the active Pokemon's current experience
+	ld hl, wPartyMon1Exp
+	call BattleMonPartyAttr
+
+	; current exp - base exp
+	ld b, h
+	ld c, l
+	ld hl, wEXPBarBaseEXP
+	ld de, wEXPBarCurEXP
+	call SubThreeByteNum
+
+	; exp needed - base exp
+	ld bc, hMultiplicand
+	ld hl, wEXPBarBaseEXP
+	ld de, wEXPBarNeededEXP
+	call SubThreeByteNum
+
+	; make the divisor an 8-bit number
+	ld hl, wEXPBarNeededEXP
+	ld de, wEXPBarCurEXP + 1
+	ld a, [hli]
+	and a
+	jr z, .twoBytes
+	ld a, [hli]
+	ld [hld], a
+	dec hl
+	ld a, [hli]
+	ld [hld], a
+	ld a, [de]
+	inc de
+	ld [de], a
+	dec de
+	dec de
+	ld a, [de]
+	inc de
+	ld [de], a
+	dec de
+	xor a
+	ld [hli], a
+	ld [de], a
+	inc de
+.twoBytes
+	ld a, [hl]
+	and a
+	jr z, .oneByte
+	srl a
+	ld [hli], a
+	ld a, [hl]
+	rr a
+	ld [hld], a
+	ld a, [de]
+	srl a
+	ld [de], a
+	inc de
+	ld a, [de]
+	rr a
+	ld [de], a
+	dec de
+	jr .twoBytes
+.oneByte
+
+	; current exp * (8 tiles * 8 pixels)
+	ld hl, hMultiplicand
+	ld de, wEXPBarCurEXP
+	ld a, [de]
+	inc de
+	ld [hli], a
+	ld a, [de]
+	inc de
+	ld [hli], a
+	ld a, [de]
+	ld [hl], a
+	ld a, $40
+	ldh [hMultiplier], a
+	call Multiply
+
+	; product / needed exp = pixel length
+	ld a, [wEXPBarNeededEXP + 2]
+	ldh [hDivisor], a
+	ld b, $04
+	jp Divide
 
 ; calculates the three byte number starting at [bc]
 ; minus the three byte number starting at [hl]
@@ -263,6 +421,12 @@ SECTION "Saffron Guards", ROMX
 
 INCLUDE "engine/events/saffron_guards.asm"
 
+
+SECTION "Starter Dex", ROMX
+
+INCLUDE "engine/events/starter_dex.asm"
+
+
 SECTION "Hidden Objects 3", ROMX
 
 INCLUDE "engine/movie/evolution.asm"
@@ -336,9 +500,6 @@ INCLUDE "data/moves/animations.asm"
 INCLUDE "data/battle_anims/subanimations.asm"
 INCLUDE "data/battle_anims/frame_blocks.asm"
 
-SECTION "Engine Spillover", ROMX
-
-INCLUDE "engine/menus/item_descriptions.asm"
 
 SECTION "BG Map Attributes (Debug)", ROMX
 
@@ -352,6 +513,14 @@ SECTION "BG Map Attributes", ROMX
 INCLUDE "data/cgb/bg_map_attributes.asm"
 IF !DEF(_DEBUG)
 	INCLUDE "engine/gfx/bg_map_attributes.asm"
+ENDC
+
+
+SECTION "bank30", ROMX
+
+; This whole bank is garbage data.
+IF !DEF(_DEBUG)
+	INCBIN "garbage/bank30.bin"
 ENDC
 
 
@@ -429,6 +598,7 @@ INCLUDE "engine/battle/get_trainer_name.asm"
 INCLUDE "engine/math/random.asm"
 INCLUDE "engine/predefs.asm"
 
+
 SECTION "Surfing Minigame", ROMX
 
 INCLUDE "engine/minigame/surfing_pikachu.asm"
@@ -451,61 +621,8 @@ INCLUDE "engine/debug/debug_menu.asm"
 
 SECTION "bank40", ROMX, BANK[$40]
 
-VoltorbPicFront::      INCBIN "gfx/pokemon/front/voltorb.pic"
-VoltorbPicBack::       INCBIN "gfx/pokemon/back/voltorbb.pic"
-ElectrodePicFront::    INCBIN "gfx/pokemon/front/electrode.pic"
-ElectrodePicBack::     INCBIN "gfx/pokemon/back/electrodeb.pic"
-ExeggcutePicFront::    INCBIN "gfx/pokemon/front/exeggcute.pic"
-ExeggcutePicBack::     INCBIN "gfx/pokemon/back/exeggcuteb.pic"
-ExeggutorPicFront::    INCBIN "gfx/pokemon/front/exeggutor.pic"
-ExeggutorPicBack::     INCBIN "gfx/pokemon/back/exeggutorb.pic"
-CubonePicFront::       INCBIN "gfx/pokemon/front/cubone.pic"
-CubonePicBack::        INCBIN "gfx/pokemon/back/cuboneb.pic"
-MarowakPicFront::      INCBIN "gfx/pokemon/front/marowak.pic"
-MarowakPicBack::       INCBIN "gfx/pokemon/back/marowakb.pic"
-TyroguePicFront::      INCBIN "gfx/pokemon/front/tyrogue.pic"
-TyroguePicBack::       INCBIN "gfx/pokemon/back/tyrogueb.pic"
-HitmonleePicFront::    INCBIN "gfx/pokemon/front/hitmonlee.pic"
-HitmonleePicBack::     INCBIN "gfx/pokemon/back/hitmonleeb.pic"
-HitmonchanPicFront::   INCBIN "gfx/pokemon/front/hitmonchan.pic"
-HitmonchanPicBack::    INCBIN "gfx/pokemon/back/hitmonchanb.pic"
-HitmontopPicFront::    INCBIN "gfx/pokemon/front/hitmontop.pic"
-HitmontopPicBack::     INCBIN "gfx/pokemon/back/hitmontopb.pic"
-LickitungPicFront::    INCBIN "gfx/pokemon/front/lickitung.pic"
-LickitungPicBack::     INCBIN "gfx/pokemon/back/lickitungb.pic"
-LickilickyPicFront::   INCBIN "gfx/pokemon/front/lickilicky.pic"
-LickilickyPicBack::    INCBIN "gfx/pokemon/back/lickilickyb.pic"
-KoffingPicFront::      INCBIN "gfx/pokemon/front/koffing.pic"
-KoffingPicBack::       INCBIN "gfx/pokemon/back/koffingb.pic"
-WeezingPicFront::      INCBIN "gfx/pokemon/front/weezing.pic"
-WeezingPicBack::       INCBIN "gfx/pokemon/back/weezingb.pic"
-RhyhornPicFront::      INCBIN "gfx/pokemon/front/rhyhorn.pic"
-RhyhornPicBack::       INCBIN "gfx/pokemon/back/rhyhornb.pic"
-RhydonPicFront::       INCBIN "gfx/pokemon/front/rhydon.pic"
-RhydonPicBack::        INCBIN "gfx/pokemon/back/rhydonb.pic"
-RhyperiorPicFront::    INCBIN "gfx/pokemon/front/rhyperior.pic"
-RhyperiorPicBack::     INCBIN "gfx/pokemon/back/rhyperiorb.pic"
-HappinyPicFront::      INCBIN "gfx/pokemon/front/happiny.pic"
-HappinyPicBack::       INCBIN "gfx/pokemon/back/happinyb.pic"
-ChanseyPicFront::      INCBIN "gfx/pokemon/front/chansey.pic"
-ChanseyPicBack::       INCBIN "gfx/pokemon/back/chanseyb.pic"
-BlisseyPicFront::      INCBIN "gfx/pokemon/front/blissey.pic"
-BlisseyPicBack::       INCBIN "gfx/pokemon/back/blisseyb.pic"
-TangelaPicFront::      INCBIN "gfx/pokemon/front/tangela.pic"
-TangelaPicBack::       INCBIN "gfx/pokemon/back/tangelab.pic"
-TangrowthPicFront::   INCBIN "gfx/pokemon/front/tangrowth.pic"
-TangrowthPicBack::    INCBIN "gfx/pokemon/back/tangrowthb.pic"
-KangaskhanPicFront::   INCBIN "gfx/pokemon/front/kangaskhan.pic"
-KangaskhanPicBack::    INCBIN "gfx/pokemon/back/kangaskhanb.pic"
-HorseaPicFront::       INCBIN "gfx/pokemon/front/horsea.pic"
-HorseaPicBack::        INCBIN "gfx/pokemon/back/horseab.pic"
 SeadraPicFront::      INCBIN "gfx/pokemon/front/seadra.pic"
 SeadraPicBack::       INCBIN "gfx/pokemon/back/seadrab.pic"
-
-SECTION "bank41", ROMX, BANK[$41]
-
-KingdraPicFront::     INCBIN "gfx/pokemon/front/kingdra.pic"
-KingdraPicBack::      INCBIN "gfx/pokemon/back/kingdrab.pic"
 GoldeenPicFront::     INCBIN "gfx/pokemon/front/goldeen.pic"
 GoldeenPicBack::      INCBIN "gfx/pokemon/back/goldeenb.pic"
 SeakingPicFront::     INCBIN "gfx/pokemon/front/seaking.pic"
@@ -514,32 +631,16 @@ StaryuPicFront::      INCBIN "gfx/pokemon/front/staryu.pic"
 StaryuPicBack::       INCBIN "gfx/pokemon/back/staryub.pic"
 StarmiePicFront::     INCBIN "gfx/pokemon/front/starmie.pic"
 StarmiePicBack::      INCBIN "gfx/pokemon/back/starmieb.pic"
-MimeJrPicFront::      INCBIN "gfx/pokemon/front/mime_jr.pic"
-MimeJrPicBack::       INCBIN "gfx/pokemon/back/mime_jrb.pic"
 MrMimePicFront::      INCBIN "gfx/pokemon/front/mr.mime.pic"
 MrMimePicBack::       INCBIN "gfx/pokemon/back/mr.mimeb.pic"
 ScytherPicFront::     INCBIN "gfx/pokemon/front/scyther.pic"
 ScytherPicBack::      INCBIN "gfx/pokemon/back/scytherb.pic"
-ScizorPicFront::      INCBIN "gfx/pokemon/front/scizor.pic"
-ScizorPicBack::       INCBIN "gfx/pokemon/back/scizorb.pic"
-KleavorPicFront::     INCBIN "gfx/pokemon/front/kleavor.pic"
-KleavorPicBack::      INCBIN "gfx/pokemon/back/kleavorb.pic"
-SmoochumPicFront::    INCBIN "gfx/pokemon/front/smoochum.pic"
-SmoochumPicBack::     INCBIN "gfx/pokemon/back/smoochumb.pic"
 JynxPicFront::        INCBIN "gfx/pokemon/front/jynx.pic"
 JynxPicBack::         INCBIN "gfx/pokemon/back/jynxb.pic"
-ElekidPicFront::      INCBIN "gfx/pokemon/front/elekid.pic"
-ElekidPicBack::       INCBIN "gfx/pokemon/back/elekidb.pic"
 ElectabuzzPicFront::  INCBIN "gfx/pokemon/front/electabuzz.pic"
 ElectabuzzPicBack::   INCBIN "gfx/pokemon/back/electabuzzb.pic"
-ElectivirePicFront::  INCBIN "gfx/pokemon/front/electivire.pic"
-ElectivirePicBack::   INCBIN "gfx/pokemon/back/electivireb.pic"
-MagbyPicFront::       INCBIN "gfx/pokemon/front/magby.pic"
-MagbyPicBack::        INCBIN "gfx/pokemon/back/magbyb.pic"
 MagmarPicFront::      INCBIN "gfx/pokemon/front/magmar.pic"
 MagmarPicBack::       INCBIN "gfx/pokemon/back/magmarb.pic"
-MagmortarPicFront::   INCBIN "gfx/pokemon/front/magmortar.pic"
-MagmortarPicBack::    INCBIN "gfx/pokemon/back/magmortarb.pic"
 PinsirPicFront::      INCBIN "gfx/pokemon/front/pinsir.pic"
 PinsirPicBack::       INCBIN "gfx/pokemon/back/pinsirb.pic"
 TaurosPicFront::      INCBIN "gfx/pokemon/front/tauros.pic"
@@ -550,32 +651,18 @@ GyaradosPicFront::    INCBIN "gfx/pokemon/front/gyarados.pic"
 GyaradosPicBack::     INCBIN "gfx/pokemon/back/gyaradosb.pic"
 LaprasPicFront::      INCBIN "gfx/pokemon/front/lapras.pic"
 LaprasPicBack::       INCBIN "gfx/pokemon/back/laprasb.pic"
-
-
-SECTION "bank42", ROMX, BANK[$42]
-
 DittoPicFront::       INCBIN "gfx/pokemon/front/ditto.pic"
 DittoPicBack::        INCBIN "gfx/pokemon/back/dittob.pic"
 EeveePicFront::       INCBIN "gfx/pokemon/front/eevee.pic"
 EeveePicBack::        INCBIN "gfx/pokemon/back/eeveeb.pic"
-FlareonPicFront::     INCBIN "gfx/pokemon/front/flareon.pic"
-FlareonPicBack::      INCBIN "gfx/pokemon/back/flareonb.pic"
-JolteonPicFront::     INCBIN "gfx/pokemon/front/jolteon.pic"
-JolteonPicBack::      INCBIN "gfx/pokemon/back/jolteonb.pic"
 VaporeonPicFront::    INCBIN "gfx/pokemon/front/vaporeon.pic"
 VaporeonPicBack::     INCBIN "gfx/pokemon/back/vaporeonb.pic"
-EspeonPicFront::      INCBIN "gfx/pokemon/front/espeon.pic"
-EspeonPicBack::       INCBIN "gfx/pokemon/back/espeonb.pic"
-LeafeonPicFront::     INCBIN "gfx/pokemon/front/leafeon.pic"
-LeafeonPicBack::      INCBIN "gfx/pokemon/back/leafeonb.pic"
-GlaceonPicFront::     INCBIN "gfx/pokemon/front/glaceon.pic"
-GlaceonPicBack::      INCBIN "gfx/pokemon/back/glaceonb.pic"
+JolteonPicFront::     INCBIN "gfx/pokemon/front/jolteon.pic"
+JolteonPicBack::      INCBIN "gfx/pokemon/back/jolteonb.pic"
+FlareonPicFront::     INCBIN "gfx/pokemon/front/flareon.pic"
+FlareonPicBack::      INCBIN "gfx/pokemon/back/flareonb.pic"
 PorygonPicFront::     INCBIN "gfx/pokemon/front/porygon.pic"
 PorygonPicBack::      INCBIN "gfx/pokemon/back/porygonb.pic"
-Porygon2PicFront::    INCBIN "gfx/pokemon/front/porygon2.pic"
-Porygon2PicBack::     INCBIN "gfx/pokemon/back/porygon2b.pic"
-PorygonZPicFront::    INCBIN "gfx/pokemon/front/porygonz.pic"
-PorygonZPicBack::     INCBIN "gfx/pokemon/back/porygonzb.pic"
 OmanytePicFront::     INCBIN "gfx/pokemon/front/omanyte.pic"
 OmanytePicBack::      INCBIN "gfx/pokemon/back/omanyteb.pic"
 OmastarPicFront::     INCBIN "gfx/pokemon/front/omastar.pic"
@@ -584,10 +671,12 @@ KabutoPicFront::      INCBIN "gfx/pokemon/front/kabuto.pic"
 KabutoPicBack::       INCBIN "gfx/pokemon/back/kabutob.pic"
 KabutopsPicFront::    INCBIN "gfx/pokemon/front/kabutops.pic"
 KabutopsPicBack::     INCBIN "gfx/pokemon/back/kabutopsb.pic"
+
+
+SECTION "bank41", ROMX, BANK[$41]
+
 AerodactylPicFront::  INCBIN "gfx/pokemon/front/aerodactyl.pic"
 AerodactylPicBack::   INCBIN "gfx/pokemon/back/aerodactylb.pic"
-MunchlaxPicFront::    INCBIN "gfx/pokemon/front/munchlax.pic"
-MunchlaxPicBack::     INCBIN "gfx/pokemon/back/munchlaxb.pic"
 SnorlaxPicFront::     INCBIN "gfx/pokemon/front/snorlax.pic"
 SnorlaxPicBack::      INCBIN "gfx/pokemon/back/snorlaxb.pic"
 ArticunoPicFront::    INCBIN "gfx/pokemon/front/articuno.pic"
@@ -607,3 +696,7 @@ MewtwoPicBack::       INCBIN "gfx/pokemon/back/mewtwob.pic"
 MewPicFront::         INCBIN "gfx/pokemon/front/mew.pic"
 MewPicBack::          INCBIN "gfx/pokemon/back/mewb.pic"
 
+
+SECTION "bank42", ROMX, BANK[$42]
+
+INCLUDE "data/sgb/sgb_palettes.asm"

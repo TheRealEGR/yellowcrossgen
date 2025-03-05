@@ -323,7 +323,7 @@ ExeggutorEvosMoves:
 
 LickitungEvosMoves:
 ; Evolutions
-	db EVOLVE_LEVEL, 44, LICKILICKY
+	db EVOLVE_LEVEL, 33, LICKILICKY
 	db 0
 ; Learnset
 	db 7, STOMP
@@ -550,7 +550,7 @@ PinsirEvosMoves:
 
 TangelaEvosMoves:
 ; Evolutions
-    db EVOLVE_LEVEL, 44, TANGROWTH
+    db EVOLVE_LEVEL, 33, TANGROWTH
 	db 0
 ; Learnset
 	db 24, BIND
@@ -817,7 +817,7 @@ EspeonEvosMoves:
 
 MagmarEvosMoves:
 ; Evolutions
-	db EVOLVE_LEVEL, 44, MAGMORTAR
+	db EVOLVE_ITEM, FIRE_STONE, 1, MAGMORTAR
 	db 0
 ; Learnset
 	db 36, LEER
@@ -841,7 +841,7 @@ Porygon2EvosMoves:
 
 ElectabuzzEvosMoves:
 ; Evolutions
-	db EVOLVE_LEVEL, 44, ELECTIVIRE
+	db EVOLVE_ITEM, THUNDER_STONE, 1, ELECTIVIRE
 	db 0
 ; Learnset
 	db 34, THUNDERSHOCK
@@ -853,7 +853,7 @@ ElectabuzzEvosMoves:
 
 MagnetonEvosMoves:
 ; Evolutions
-	db EVOLVE_LEVEL, 44, MAGNEZONE
+	db EVOLVE_ITEM, THUNDER_STONE, 1, MAGNEZONE
 	db 0
 ; Learnset
 	db 21, SONICBOOM

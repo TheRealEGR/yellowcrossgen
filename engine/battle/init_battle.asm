@@ -157,7 +157,7 @@ _LoadTrainerPic:
 	ld d, a ; de contains pointer to trainer pic
 	ld a, [wLinkState]
 	and a
-	ld a, BANK("Pics 8") ; this is where all the trainer pics are (not counting Red's)
+	ld a, BANK("Pics 6") ; this is where all the trainer pics are (not counting Red's)
 	jr z, .loadSprite
 	ld a, BANK(RedPicFront)
 .loadSprite
