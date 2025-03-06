@@ -2268,7 +2268,9 @@ wSeafoamIslandsB4FCurScript:: db
 wRoute18Gate1FCurScript:: db
 wGameProgressFlagsEnd::
 
-	ds 56
+	ds 55
+
+wPlayerMoveAccuracyPercent:: db;
 
 wObtainedHiddenItemsFlags:: flag_array 112
 

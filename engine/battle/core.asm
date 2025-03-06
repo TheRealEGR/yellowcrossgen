@@ -3035,7 +3035,7 @@ PrintMenuItem:
 	hlcoord 1, 10
 	ld de, DisabledText
 	call PlaceString
-	jr .moveDisabled
+	jp .moveDisabled
 .notDisabled
 	ld hl, wCurrentMenuItem
 	dec [hl]
@@ -3063,25 +3063,81 @@ PrintMenuItem:
 	ld a, [hl]
 	and $3f
 	ld [wcd6d], a
+	; new, testing
+	ld de, wPlayerMoveNum
+	ld a, [wPlayerSelectedMove]
+	dec a
+	ld hl, Moves
+	ld bc, MOVE_LENGTH
+	call AddNTimes
+	ld a, BANK(Moves)
+	call FarCopyData
 ; print TYPE/<type> and <curPP>/<maxPP>
-	hlcoord 1, 9
-	ld de, TypeText
+	hlcoord 1, 11
+	ld de, PPText
 	call PlaceString
+
 	hlcoord 7, 11
 	ld [hl], "/"
-	hlcoord 5, 9
-	ld [hl], "/"
+	hlcoord 8, 10
+	ld [hl], "%"
+
+	hlcoord 3, 10 ; new
+	ld a, [wPlayerMoveEffect]
+	cp OHKO_EFFECT
+	jr z, .OHKOMove
+	cp SPECIAL_DAMAGE_EFFECT
+	jr z, .specialDamage
+	hlcoord 1, 10
+	ld de, wPlayerMovePower ; testing
+	lb bc, 1, 3
+	call PrintNumber ; prints the c-digit, b-byte value at de
+	jr .afterDamagePrinting
+.OHKOMove
+	ld [hl], "I"
+	jr .afterDamagePrinting
+.specialDamage
+	ld [hl], "?"
+.afterDamagePrinting
+
 	hlcoord 5, 11
 	ld de, wcd6d
 	lb bc, 1, 2
 	call PrintNumber
+
+	hlcoord 5, 10 ; new
+	xor a
+	ld b, a
+	ld a, [wPlayerMoveAccuracy]
+.loopAccuracy
+	sub 12
+	jr c, .accuracyFound
+	ld c, a
+	ld a, b
+	add 5
+	ld b, a
+	ld a, c
+	jr .loopAccuracy
+.accuracyFound
+	ld a, b
+	cp 76 ; fine-tuned number because
+	jr c, .noSub5
+	sub 5
+.noSub5
+	ld [wPlayerMoveAccuracyPercent], a
+	ld de, wPlayerMoveAccuracyPercent
+	lb bc, 1, 3
+	call PrintNumber ; prints the c-digit, b-byte value at de
+
 	hlcoord 8, 11
 	ld de, wMaxPP
 	lb bc, 1, 2
 	call PrintNumber
+
 	call GetCurrentMove
-	hlcoord 2, 10
+	hlcoord 1, 9
 	predef PrintMoveType
+
 .moveDisabled
 	ld a, $1
 	ldh [hAutoBGTransferEnabled], a
@@ -3092,6 +3148,9 @@ DisabledText:
 
 TypeText:
 	db "TYPE@"
+
+PPText:
+	db "PP:@"
 
 SelectEnemyMove:
 	ld a, [wLinkState]
