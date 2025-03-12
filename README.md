@@ -10,10 +10,7 @@ It builds the following ROMs:
 
 Some bugs:
 
--The intro glitches out, reccomended to skip
--Blue´s sprite glitches out
--The surfing minigame also glitches
--The NPC sprites also glitch
+-For Public Release 1.1.1, idk
 
 To set up the repository, see [**INSTALL.md**](INSTALL.md).
 
