@@ -671,7 +671,7 @@ DrawDexEntryOnScreen:
 Pokedex_PrintFlavorTextAtRow11:
 	bccoord 1, 11
 Pokedex_PrintFlavorTextAtBC:
-	ld a, %10
+	ld a, %11
 	ldh [hClearLetterPrintingDelayFlags], a
 	call TextCommandProcessor ; print pokedex description text
 	xor a

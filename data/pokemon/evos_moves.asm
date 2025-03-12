@@ -495,9 +495,9 @@ GastlyEvosMoves:
 
 ScytherEvosMoves:
 ; Evolutions
+	db EVOLVE_ITEM, FIRE_STONE, 1, KLEAVOR
 	db EVOLVE_LEVEL, 44, SCIZOR
 	db EVOLVE_TRADE, 1, SCIZOR
-	db EVOLVE_ITEM, FIRE_STONE, 1, KLEAVOR
 	db 0
 ; Learnset
 	db 17, LEER
@@ -641,8 +641,8 @@ PidgeyEvosMoves:
 
 SlowpokeEvosMoves:
 ; Evolutions
-	db EVOLVE_LEVEL, 37, SLOWBRO
 	db EVOLVE_ITEM, WATER_STONE, 1, SLOWKING
+	db EVOLVE_LEVEL, 37, SLOWBRO
 	db 0
 ; Learnset
 	db 18, DISABLE

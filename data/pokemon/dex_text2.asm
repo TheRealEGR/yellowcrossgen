@@ -363,8 +363,8 @@ _KleavorDexEntry::
 	next "when it evolved"
 	
 	page "thanks to a very"
-	next "rare ore found in"
-	next "volcanic areas"
+	next "rare ore found"
+	next "in volcanic areas"
 	dex
 
 _SmoochumDexEntry::

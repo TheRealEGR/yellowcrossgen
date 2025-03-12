@@ -619,13 +619,16 @@ _PrimeapeDexEntry::
 	dex
 
 _AnnihilapeDexEntry::
-	text "When the anger of"
-	next "PRIMEAPE reaches a"
-	next "critical point,"
+	text "When its anger"
+	next "rose beyond a"
+	next "critical point," 
 
-	page "it breaks the"
-	next "limit of his"
-	next "physical body"
+	page "this #MON" 
+	next "gained power that" 
+	next "is unfettered by" 
+
+	page "the limits of" 
+	next "its physical body"
 	dex
 
 _GrowlitheDexEntry::

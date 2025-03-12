@@ -14,7 +14,7 @@ SetDebugNewGameParty: ; unreferenced except in _DEBUG
 
 DebugNewGameParty: ; unreferenced except in _DEBUG
 	db DRAGONITE, 80
-	db ESPEON, 80
+	db SCYTHER, 80
 	db ANNIHILAPE, 80
 	db STARTER_PIKACHU, 80
 	db TANGROWTH, 80
@@ -51,6 +51,16 @@ IF DEF(_DEBUG)
 	ld a, SURF
 	ld [hli], a
 	ld a, STRENGTH
+	ld [hl], a
+
+	ld hl, wPartyMon2Moves
+	ld a, TELEPORT
+	ld [hli], a
+	ld a, TRI_ATTACK
+	ld [hli], a
+	ld a, SWORDS_DANCE
+	ld [hli], a
+	ld a, WING_ATTACK
 	ld [hl], a
 
 	; Get some debug items.

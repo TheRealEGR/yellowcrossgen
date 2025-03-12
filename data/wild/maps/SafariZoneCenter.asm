@@ -1,5 +1,5 @@
 SafariZoneCenterWildMons:
-	def_grass_wildmons 30 ; encounter rate
+	def_grass_wildmons 15 ; encounter rate
 	db 14, NIDORAN_M
 	db 36, NIDORAN_F
 	db 24, EXEGGCUTE
@@ -14,5 +14,17 @@ SafariZoneCenterWildMons:
 	db 23, PINSIR
 	end_grass_wildmons
 
-	def_water_wildmons 0 ; encounter rate
+	def_water_wildmons 7 ; encounter rate
+	db 32, GOLDEEN
+	db 30, POLIWAG
+	db 28, POLIWHIRL
+	db 30, SEAKING
+	db 31, PSYDUCK
+	db 30, SEAKING
+	db 35, GOLDUCK
+	db 25, POLIWHIRL
+	db 32, GOLDUCK
+	db 36, GOLDUCK
+	db 15, SHELLDER
+	db 15, KRABBY
 	end_water_wildmons
