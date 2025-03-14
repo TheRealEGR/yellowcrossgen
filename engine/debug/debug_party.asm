@@ -14,7 +14,7 @@ SetDebugNewGameParty: ; unreferenced except in _DEBUG
 
 DebugNewGameParty: ; unreferenced except in _DEBUG
 	db DRAGONITE, 80
-	db SCYTHER, 80
+	db ZUBAT, 21
 	db ANNIHILAPE, 80
 	db STARTER_PIKACHU, 80
 	db TANGROWTH, 80
