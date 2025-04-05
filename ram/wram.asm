@@ -75,6 +75,8 @@ wTempoModifier:: db
 
 wc0f3:: dw
 
+	ds 11
+
 
 SECTION "Sprite State Data", WRAM0
 
@@ -311,6 +313,7 @@ wPrinterQueueLength:: db
 wPrinterDataEnd::
 
 wPrinterPokedexEntryTextPointer:: dw
+	ds 2
 wPrinterPokedexMonIsOwned:: db
 	ds 226
 UNION
@@ -510,6 +513,7 @@ NEXTU
 ; If the slot is lucky, it equals 250, giving a 5/256 (~2%) chance.
 ; Otherwise, it equals 253, giving a 2/256 (~0.8%) chance.
 wSlotMachineSevenAndBarModeChance:: db
+	ds 2
 ; ROM back to return to when the player is done with the slot machine
 wSlotMachineSavedROMBank:: db
 wSum:: dw
@@ -590,6 +594,8 @@ wLinkBattleRandomNumberListIndex:: db
 ; number of times remaining that AI action can occur
 wAICount:: db
 
+	ds 2
+
 wEnemyMoveListIndex:: db
 
 ; The enemy mon's HP when it was switched in or when the current player mon
@@ -642,6 +648,7 @@ wEnemyBideAccumulatedDamage:: dw
 	ds 8
 wMiscBattleDataEnd::
 NEXTU
+	ds 2
 wTrainerCardBadgeAttributes:: ds 6 * 9 + 1
 
 NEXTU
@@ -696,6 +703,7 @@ wPlayerMonSpeedMod:: db
 wPlayerMonSpecialMod:: db
 wPlayerMonAccuracyMod:: db
 wPlayerMonEvasionMod:: db
+	ds 2
 wPlayerMonStatModsEnd::
 
 	ds 1
@@ -717,6 +725,7 @@ wEnemyMonSpeedMod:: db
 wEnemyMonSpecialMod:: db
 wEnemyMonAccuracyMod:: db
 wEnemyMonEvasionMod:: db
+	ds 2
 wEnemyMonStatModsEnd::
 
 NEXTU
@@ -752,6 +761,7 @@ wOverrideSimulatedJoypadStatesMask:: db
 UNION
 wTradedPlayerMonSpecies:: db
 wTradedEnemyMonSpecies:: db
+	ds 2
 wTradedPlayerMonOT:: ds NAME_LENGTH
 wTradedPlayerMonOTID:: dw
 wTradedEnemyMonOT:: ds NAME_LENGTH
@@ -883,6 +893,7 @@ wCanPlaySlots:: db
 	ds 8
 ; temporary variable used to add payout amount to the player's coins
 wTempCoins1:: dw
+	ds 2
 ; temporary variable used to subtract the bet amount from the player's coins
 wTempCoins2:: dw
 
@@ -958,6 +969,7 @@ NEXTU
 	ds 16
 ; $3d = tree tile, $52 = grass tile
 wCutTile:: db
+	ds 2
 ; 0 = cut animation, 1 = boulder dust animation
 wWhichAnimationOffsets:: db
 
@@ -1163,6 +1175,8 @@ wSpriteIndex:: db
 ; movement byte 2 of current sprite
 wCurSpriteMovement2:: db
 
+	ds 2
+
 ; sprite offset of sprite being controlled by NPC movement script
 wNPCMovementScriptSpriteOffset:: db
 
@@ -1352,6 +1366,8 @@ NEXTU
 wLearnMoveMonName:: ds NAME_LENGTH
 ENDU
 
+	ds 2
+
 ; money received after battle = base money × level of last enemy mon
 wTrainerBaseMoney:: dw ; BCD
 
@@ -1484,6 +1500,8 @@ NEXTU
 wPlayerNumHits:: db
 ENDU
 
+	ds 2
+
 ; non-zero when an item or move that allows escape from battle was used
 wEscapedFromBattle:: db
 
@@ -1509,6 +1527,8 @@ wTempTilesetNumTiles:: db
 ; used by the pokemart code to save the existing value of wListScrollOffset
 ; so that it can be restored when the player is done with the pokemart NPC
 wSavedListScrollOffset:: db
+
+	ds 2
 
 ; base coordinates of frame block
 wBaseCoordX:: db
@@ -1571,6 +1591,7 @@ ENDU
 
 wEndBattleWinTextPointer:: dw
 wEndBattleLoseTextPointer:: dw
+	ds 2
 wEndBattleTextRomBank:: db
 
 	ds 1
@@ -1589,6 +1610,8 @@ NEXTU
 ; or zero it.
 wSlotMachineAllowMatchesCounter:: db
 ENDU
+
+	ds 2
 
 wOutwardSpiralTileMapPointer:: db
 
@@ -1694,7 +1717,11 @@ wMonHeaderEnd::
 ; saved at the start of a battle and then written back at the end of the battle
 wSavedTileAnimations:: db
 
+	ds 2
+
 wDamage:: dw
+
+	ds 2
 
 wRepelRemainingSteps:: db
 
@@ -1842,6 +1869,9 @@ wSerialPlayerDataBlock:: ; ds $1a8
 wPseudoItemID:: db
 
 wUnusedD153:: db
+
+	ds 1
+	
 
 wEvoStoneItemID:: db
 
