@@ -66,8 +66,12 @@ VermilionCityDefaultScript:
 	ld a, TEXT_VERMILIONCITY_SAILOR1
 	ldh [hSpriteIndexOrTextID], a
 	call DisplayTextID
+	ld a, [wObtainedBadges] ; ship returns after obtaining the soul badge
+	bit 4, a
+	jr nz, .default
 	CheckEvent EVENT_SS_ANNE_LEFT
 	jr nz, .ship_departed
+.default
 	ld b, S_S_TICKET
 	predef GetQuantityOfItemInBag
 	ld a, b
@@ -155,8 +159,12 @@ VermilionCityBeautyText:
 
 VermilionCityGambler1Text:
 	text_asm
+	ld a, [wObtainedBadges]
+	bit 4, a ; after obtaining soul badge the ship returns
+	jr nz, .default
 	CheckEvent EVENT_SS_ANNE_LEFT
 	jr nz, .ship_departed
+.default
 	ld hl, .DidYouSeeText
 	call PrintText
 	jr .text_script_end
@@ -254,7 +262,22 @@ VermilionCityMachopText:
 	text_end
 
 VermilionCitySailor2Text:
+	text_asm
+	ld a, [wObtainedBadges]
+	bit 4, a ; after obtaining the soul badge the ship returns
+	jr z, .default
+	ld hl, VermilionCityText15
+	ret
+.default
+	ld hl, VermilionCitySailor2get
+	ret
+
+VermilionCitySailor2get:
 	text_far _VermilionCitySailor2Text
+	text_end
+
+VermilionCityText15:
+	text_far _VermilionCityText15
 	text_end
 
 VermilionCitySignText:

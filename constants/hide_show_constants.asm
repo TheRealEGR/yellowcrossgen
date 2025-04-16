@@ -242,7 +242,5 @@ DEF SHOW EQU $15
 	const HS_SEAFOAM_ISLANDS_B4F_BOULDER_1 ; E9
 	const HS_SEAFOAM_ISLANDS_B4F_BOULDER_2 ; EA
 	const HS_ARTICUNO                      ; EB
-	const HS_DAISY_SITTING_COPY            ; EC
-	const HS_DAISY_WALKING_COPY            ; ED
-	const HS_TOWN_MAP_COPY                 ; EE
+	const HS_MEW_VERMILION_DOCK            ; EC
 DEF NUM_HS_OBJECTS EQU const_value
