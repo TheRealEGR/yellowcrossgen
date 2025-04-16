@@ -147,8 +147,6 @@ INCLUDE "engine/items/tmhm.asm"
 INCLUDE "engine/pikachu/respawn_overworld_pikachu.asm"
 INCLUDE "engine/battle/scale_sprites.asm"
 INCLUDE "engine/slots/game_corner_slots2.asm"
-INCLUDE "data/moves/moves.asm"
-INCLUDE "data/pokemon/base_stats.asm"
 
 
 SECTION "Slot Machines", ROMX
@@ -156,11 +154,13 @@ SECTION "Slot Machines", ROMX
 INCLUDE "engine/movie/title_rb.asm"
 INCLUDE "engine/slots/slot_machine.asm"
 INCLUDE "engine/slots/game_corner_slots.asm"
+INCLUDE "data/moves/moves.asm"
+INCLUDE "data/pokemon/cries.asm"
 
 
 SECTION "Battle Engine 6", ROMX
 
-INCLUDE "data/pokemon/cries.asm"
+INCLUDE "data/pokemon/base_stats.asm"
 INCLUDE "engine/battle/trainer_ai.asm"
 INCLUDE "engine/battle/draw_hud_pokeball_gfx.asm"
 INCLUDE "gfx/trade.asm"
@@ -428,6 +428,7 @@ INCLUDE "engine/events/give_pokemon.asm"
 INCLUDE "engine/battle/get_trainer_name.asm"
 INCLUDE "engine/math/random.asm"
 INCLUDE "engine/predefs.asm"
+
 
 SECTION "Surfing Minigame", ROMX
 
