@@ -314,7 +314,7 @@ TruckCheck:
 	call CopyVideoData
 	ld hl, TruckOAMTable
 	ld bc, $20
-	ld de, wVermilionDockTileMapBuffer + $20
+	ld de, wShadowOAMSprite20XCoord
 	call CopyData
 	ld a, $c
 	ld [wNewTileBlockID], a ; used to be wd09f
@@ -326,7 +326,7 @@ TruckCheck:
 	ld b, 32
 	ld de, 4
 .movingtruck
-	ld hl, wVermilionDockTileMapBuffer + $21
+	ld hl, wShadowOAMSprite21XCoord
 	ld a, 8
 .movingtruck2
 	dec [hl]
